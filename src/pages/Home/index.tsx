@@ -45,7 +45,7 @@ const Home = (): JSX.Element => {
   }
 
   return (
-    <ProductList>
+    <ProductList >
       {products.map((products) => (
         <li key={products.id}>
           <img src={products.image} />
