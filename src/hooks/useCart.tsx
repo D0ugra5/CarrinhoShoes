@@ -1,3 +1,4 @@
+import { exception } from "node:console";
 import { createContext, ReactNode, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "../services/api";
@@ -13,6 +14,7 @@ interface UpdateProductAmount {
 }
 
 interface CartContextData {
+
   cart: Product[];
   addProduct: (productId: number) => Promise<void>;
   removeProduct: (productId: number) => void;
@@ -22,10 +24,12 @@ interface CartContextData {
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
+  const [stockinfo, setStock] = useState<Stock[]>([])
   const [cart, setCart] = useState<Product[]>(() => {
 
     const storagedCart = localStorage.getItem("RocketShoes:cart");
     if (storagedCart) {
+
       return JSON.parse(storagedCart);
     }
 
@@ -34,8 +38,49 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   const addProduct = async (productId: number) => {
     try {
-    localStorage.setItem('RocketShoes:cart',JSON.stringify(cart))
+      const ProcuraCart = [...cart]
+      console.log(ProcuraCart)
+
+
+      const found = ProcuraCart.find(element => element.id > productId);
+
+
+
+      const stock = await api.get(`/stock/${productId}`);
+      const amountStock = stock.data.amount
+      const NewAmount = found?.amount ? amountStock :1
+      
+      
+    
+
+      const DadosnewPrduto = await api.get(`/products/${productId}`)
+
+
+      const NewAdd = {
+        id: DadosnewPrduto.data.id,
+        title: DadosnewPrduto.data.title,
+        price: DadosnewPrduto.data.price,
+        image: DadosnewPrduto.data.image,
+        amount: NewAmount,
+      }
+
+      const amount = 1
+      const NewAddProducts = [
+
+        NewAdd,
+        ...cart,
+      ]
+
+      setCart(NewAddProducts)
+
+
+
+      // localStorage.setItem('@RocketShoes:cart', JSON.stringify(cart))
+
+
+
     } catch {
+
       // TODO
     }
   };
