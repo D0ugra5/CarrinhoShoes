@@ -39,19 +39,23 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const addProduct = async (productId: number) => {
     try {
       const ProcuraCart = [...cart]
-      console.log(ProcuraCart)
+   
+  console.log(ProcuraCart)
 
+      const found = ProcuraCart.find(element => element.id == productId);
 
-      const found = ProcuraCart.find(element => element.id > productId);
-
-
+console.log('found',found)
 
       const stock = await api.get(`/stock/${productId}`);
       const amountStock = stock.data.amount
-      const NewAmount = found?.amount ? amountStock :1
+  
+
       
-      
-    
+      const NewAmount = found?.amount  ?   found.amount + 1   : 1
+      if(NewAmount >= amountStock){ 
+         toast.error('Quantidade solicitada fora de estoque');
+         return;
+    }
 
       const DadosnewPrduto = await api.get(`/products/${productId}`)
 
@@ -70,7 +74,23 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
         NewAdd,
         ...cart,
       ]
+ if(found?.id){
 
+  setCart([
+
+
+    {
+      id: DadosnewPrduto.data.id,
+      title: DadosnewPrduto.data.title,
+      price: DadosnewPrduto.data.price,
+      image: DadosnewPrduto.data.image,
+      amount: NewAmount,
+    }
+  
+
+  ])
+return
+ }
       setCart(NewAddProducts)
 
 
