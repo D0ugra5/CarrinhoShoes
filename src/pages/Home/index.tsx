@@ -28,10 +28,6 @@ const Home = (): JSX.Element => {
   const { addProduct, cart } = useCart();
  
    const cartItemsAmount = cart.reduce((sumAmount, product) => {
-   let id  = product.id
-    let teste  = {
-      id:product.amount
-    }
     if(product.id ){
   sumAmount [product.id] = product.amount
  }
@@ -87,3 +83,8 @@ const Home = (): JSX.Element => {
 };
 
 export default Home;
+
+
+
+
+
