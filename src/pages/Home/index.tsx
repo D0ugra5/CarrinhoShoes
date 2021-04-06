@@ -28,16 +28,20 @@ const Home = (): JSX.Element => {
   const { addProduct, cart } = useCart();
  
    const cartItemsAmount = cart.reduce((sumAmount, product) => {
-    if(product.id ){
-  sumAmount [product.id] = product.amount
- }
-    return sumAmount
+    
+      const newSumAmount ={...sumAmount}
+      newSumAmount [product.id] = product.amount
+
+    return newSumAmount
   }, {} as CartItemsAmount)
   useEffect(() => {
     async function loadProducts() {
-      api("/products ").then((response) => setProducts(response.data));
-   
-
+  const reponse = await api.get<Product[]>('products')
+   const data = reponse.data.map(product =>({
+     ...product,
+     priceFormatted: formatPrice(product.price)
+   }))
+setProducts(data)
     }
 
     loadProducts();
@@ -56,10 +60,7 @@ const Home = (): JSX.Element => {
           <strong>{products.title}</strong>
           <span>
             {
-              new Intl.NumberFormat("pt-br", {
-                style: "currency",
-                currency: "BRL",
-              }).format(products.price)
+              products.priceFormatted
             }
             
           </span>

@@ -64,7 +64,7 @@ subTotal:formatPrice(product.price * product.amount)
   }
 
   function handleRemoveProduct(productId: number) {
-   removeProduct(productId)
+    removeProduct(productId)
   }
 
   return (
@@ -81,7 +81,7 @@ subTotal:formatPrice(product.price * product.amount)
         </thead>
           {cartFormatted.map((product)=>(
             <tbody>
-            <tr data-testid="product">
+            <tr key={product.id} data-testid="product">
               <td>
                 <img src={product.image} />
               </td>
@@ -95,7 +95,7 @@ subTotal:formatPrice(product.price * product.amount)
                   <button
                     type="button"
                     data-testid="decrement-product"
-                  // disabled={product.amount <= 1}
+                  disabled={product.amount <= 1}
                    onClick={() => handleProductDecrement(product)}
                   >
                     <MdRemoveCircleOutline size={20} />
